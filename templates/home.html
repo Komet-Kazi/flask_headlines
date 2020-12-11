@@ -3,68 +3,83 @@
 <head>
     <title>Headlines</title>
     <style>
-        html{
+        html {
             font-family: "Helvetica";
             background: white;
         }
 
-        body{
+        body {
             background: lightgray;
             max-width: 900px;
             margin: 0 auto;
         }
-        #header{
+
+        #header {
+            padding-top: 5;
             background: lightsteelblue;
+        }
+
+        #inner-header {
+            padding-left: 10;
+        }
+
+        #main {
+            padding-left: 10;
         }
     </style>
 </head>
 
 <body>
     <div id="header">
-        <h1>Headlines</h1>
-        <p>Headlines. Currency. Weather.</p>
+        <div id="inner-header">
+            <h1>Headlines</h1>
+            <p>Headlines. Currency. Weather.</p>
+        </div>
         <hr />
     </div>
-
-    <!-- WEATHER -->
-    <h2>Current weather</h2>
-    <form>
-        <input type="text" name="city" placeholder="weather search" />
-        <input type="submit" value="Submit" />
-    </form>
-    <p>City: <b>{{weather.city}}, {{weather.country_code}}</b></p>
-    <p>{{weather.description}} |{{weather.temperature}}&#8457;</p>
-    <!-- END WEATHER -->
-    <!-- CURRENCY -->
-    <h2>Currency</h2>
-    <form>
-        from: <select name="currency_from">
-            {% for currency in currencies %}
-            <option value="{{currency}}" {{'selected="selected"' if currency_exchange.from==currency}}>{{currency}}</option>
-            {% endfor %}
-        </select>
-        to: <select name="currency_to">
-            {% for currency in currencies %}
-            <option value="{{currency}}" {{'selected="selected"' if currency_exchange.to==currency}}>{{currency}}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" value="Submit">
-    </form>
-    1 {{currency_exchange.from}} = {{currency_exchange.to}} {{currency_exchange.rate}}
-    <h2>Headlines</h2>
-    <!-- HEADLINES -->
-    <form>
-        <input type="text" name="publication" placeholder="search" />
-        <!-- Passes inputs as GET arguments into the URL -->
-        <!-- name = GET argument -->
-        <input type="submit" value="Submit" />
-    </form>
-    {% for article in articles %}
-    <b><a href="{{article.link}}">{{article.title}}</a></b><br />
-    <i>{{article.published}}</i><br />
-    <p>{{article.summary}}</p>
-    <hr />
-    {% endfor %}
+    <div id="main">
+        <!-- WEATHER -->
+        <h2>Current weather</h2>
+        <form>
+            <input type="text" name="city" placeholder="weather search" />
+            <input type="submit" value="Submit" />
+        </form>
+        <p>City: <b>{{weather.city}}, {{weather.country_code}}</b></p>
+        <p>{{weather.description}} |{{weather.temperature}}&#8457;</p>
+        <!-- END WEATHER -->
+        <!-- CURRENCY -->
+        <h2>Currency</h2>
+        <form>
+            from: <select name="currency_from">
+                {% for currency in currencies %}
+                <option value="{{currency}}" {{'selected="selected"' if currency_exchange.from==currency}}>{{currency}}
+                </option>
+                {% endfor %}
+            </select>
+            to: <select name="currency_to">
+                {% for currency in currencies %}
+                <option value="{{currency}}" {{'selected="selected"' if currency_exchange.to==currency}}>{{currency}}
+                </option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+        1 {{currency_exchange.from}} = {{currency_exchange.to}} {{currency_exchange.rate}}
+        <h2>Headlines</h2>
+        <!-- HEADLINES -->
+        <form>
+            <input type="text" name="publication" placeholder="search" />
+            <!-- Passes inputs as GET arguments into the URL -->
+            <!-- name = GET argument -->
+            <input type="submit" value="Submit" />
+        </form>
+        {% for article in articles %}
+        <b><a href="{{article.link}}">{{article.title}}</a></b><br />
+        <i>{{article.published}}</i><br />
+        <p>{{article.summary}}</p>
+        <hr />
+        {% endfor %}
+    </div>
 </body>
 
 </html>
