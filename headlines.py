@@ -1,4 +1,6 @@
 import feedparser
+import datetime
+from flask import make_response
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -54,7 +56,7 @@ RSS_FEEDS = {
 
 DEFAULT = {
     "publication": "bbc",
-    "city": "Tucson,US",
+    "city": "Tucson, US",
     "currency_from": "USD",
     "currency_to": "JOD",
 }
@@ -64,35 +66,36 @@ DEFAULT = {
 def home():
     """"""
     # Get customized headlines based  on user input or DEFAULT
-    publication = request.args.get("publication")
-    if not publication:
-        publication = DEFAULT["publication"]
+    publication = get_value_with_fallback("publication")
     articles = get_news(publication)
 
     # Get customized weather based on user iput or DEFAULT
-    city = request.args.get("city")
-    if not city:
-        city = DEFAULT["city"]
+    city = get_value_with_fallback("city")
     weather = get_weather(city)
 
     # get customized currency rates via user input or DEFAULT
-    currency_from = request.args.get("currency_from")
-    if not currency_from:
-        currency_from = DEFAULT["currency_from"]
-
-    currency_to = request.args.get("currency_to")
-    if not currency_to:
-        currency_to = DEFAULT["currency_to"]
-
+    currency_from = get_value_with_fallback("currency_from")
+    currency_to = get_value_with_fallback("currency_to")
     rate, currencies = get_rate(currency_from, currency_to)
+
     currency_exchange = {"rate": rate, "from": currency_from, "to": currency_to}
-    return render_template(
-        "home.html",
-        articles=articles,
-        weather=weather,
-        currency_exchange=currency_exchange,
-        currencies=currencies,
+    
+    # Save cookies and return template
+    response = make_response(
+        render_template(
+            "home.html",
+            articles=articles,
+            weather=weather,
+            currency_exchange=currency_exchange,
+            currencies=sorted(currencies),
+        )
     )
+    expires = datetime.datetime.now() + datetime.timedelta(days=365)
+    response.set_cookie("publication", publication, expires=expires)
+    response.set_cookie("city", city, expires=expires)
+    response.set_cookie("currency_from", currency_exchange.get("from"), expires=expires)
+    response.set_cookie("currency_to", currency_exchange.get("to"), expires=expires)
+    return response
 
 
 def get_news(query):
@@ -104,8 +107,7 @@ def get_news(query):
     returns:
         If the value is in our RSS_FEEDS dict, we return the matching publication headlines page.
     """
-    query = request.args.get("publication")
-    if not query or query.lower() not in RSS_FEEDS:
+    if query.lower() not in RSS_FEEDS:
         publication = DEFAULT["publication"]
     else:
         publication = query.lower()
@@ -168,6 +170,13 @@ def get_rate(frm, to):
 
     return (to_rate / frm_rate, rates.keys())
 
+def get_value_with_fallback(key):
+    '''Check the url > cookies > Defaults for the passed key'''
+    if request.args.get(key):
+        return request.args.get(key)
+    if request.cookies.get(key):
+        return request.cookies.get(key)
+    return DEFAULT[key]
 
 def jPrint(obj):
     """

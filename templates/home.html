@@ -12,7 +12,7 @@
         <input type="text" name="city" placeholder="weather search" />
         <input type="submit" value="Submit" />
     </form>
-    <p>City: <b>{{weather.city}}, {{weather.country}}</b></p>
+    <p>City: <b>{{weather.city}}, {{weather.country_code}}</b></p>
     <p>{{weather.description}} |{{weather.temperature}}&#8457;</p>
     <!-- END WEATHER -->
     <!-- CURRENCY -->
@@ -20,12 +20,12 @@
     <form>
         from: <select name="currency_from">
             {% for currency in currencies %}
-            <option value="{{currency}}" {{'selected="selected"' if currency_from==currency}}>{{currency}}</option>
+            <option value="{{currency}}" {{'selected="selected"' if currency_exchange.from==currency}}>{{currency}}</option>
             {% endfor %}
         </select>
         to: <select name="currency_to">
             {% for currency in currencies %}
-            <option value="{{currency}}" {{'selected="selected"' if currency_to==currency}}>{{currency}}</option>
+            <option value="{{currency}}" {{'selected="selected"' if currency_exchange.to==currency}}>{{currency}}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Submit">
