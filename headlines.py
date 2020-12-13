@@ -8,6 +8,9 @@ import json
 import requests
 import urllib.parse
 
+
+
+
 # ----------------- Use secrets.ini file to store private info and passwords ---------------------#
 import configparser
 
@@ -59,6 +62,7 @@ DEFAULT = {
     "city": "Tucson, US",
     "currency_from": "USD",
     "currency_to": "JOD",
+    "url": "https://pbpython.com/pathlib-intro.html"
 }
 
 
@@ -80,6 +84,7 @@ def home():
 
     currency_exchange = {"rate": rate, "from": currency_from, "to": currency_to}
     
+
     # Save cookies and return template
     response = make_response(
         render_template(
@@ -90,6 +95,7 @@ def home():
             currencies=sorted(currencies),
         )
     )
+
     expires = datetime.datetime.now() + datetime.timedelta(days=365)
     response.set_cookie("publication", publication, expires=expires)
     response.set_cookie("city", city, expires=expires)
@@ -146,7 +152,6 @@ def get_weather(query):
 
     return weather
 
-
 def get_rate(frm, to):
     """
     Request current exchange rate information for the location passed.
@@ -188,7 +193,6 @@ def jPrint(obj):
     """
 
     return json.dumps(obj, sort_keys=True, indent=4)
-
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
